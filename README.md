@@ -1,2 +1,6 @@
-# PSU-CS416P-Course-Portfolio
-Home repository for assignments in CS416P
+Frank Claverie
+
+CS 416P Fall 2024
+
+# Content:
+*Pending: student's tears
