@@ -6,30 +6,37 @@ Fall 2024
 # Documentation & inspiration found at:
 # https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.wavfile.write.html#scipy.io.wavfile.write
 
-
 import numpy as np
 from scipy.io.wavfile import write
 import matplotlib.pyplot as plot
 import struct
 
-# Globals for 
+# Global data
 samplerate = 48000
 freq = 440
+max_amplitude = np.iinfo(np.int16).max
+
+
+
+# -----Main assignment functions-----
 
 # Part 1:
 def make_sine_wav_file():
+    # Create sine data
     t = np.linspace(0., 1., samplerate)
-    amplitude = .25 * np.iinfo(np.int16).max
+    amplitude = .25 * max_amplitude
     data = amplitude * np.sin(2. * np.pi * freq * t)
+
+    # Export to wav file
     write("./sine.wav", samplerate, data.astype(np.int16))
     #plot_sine_wave(data)
-    return
+    return data
 
 # Part 2
 def make_fuzzy_wav():
     # Create sine data
     t = np.linspace(0., 1., samplerate)
-    amplitude = np.iinfo(np.int16).max
+    amplitude = 0.5 * max_amplitude
     data = amplitude * np.sin(2. * np.pi * freq * t)
 
     # Clip all low and high data points past threshold
@@ -41,18 +48,20 @@ def make_fuzzy_wav():
         elif data[i] < low_clip:
             data[i] = low_clip
 
-
+    # Export
     write("./clipped.wav", samplerate, data.astype(np.int16))
 
-    plot_sine_wave(data)
-    print("Amps:", amplitude, high_clip, low_clip)
-    for i in data[:50:]:
-        print(i)
+    # Analytic - enable for some sweet extra info
+    #plot_sine_wave(data)
+    #print("Amps:", amplitude, high_clip, low_clip)
+    #for i in data[:50:]:
+    #    print(i)
+    return data
 
-    return
 
 
 # -----Analytic bonus content-----
+
 # Useful because I was curious how smooth the data collection is.
 def plot_sine_wave(sine_array):
     plot.plot(sine_array)
@@ -66,7 +75,7 @@ def extract_wav_header(wav_file_path):
     with open(wav_file_path, 'rb') as wav_file:
         header = wav_file.read(44)  # WAV header is 44 bytes long
 
-
+        # File validation cause we cool like that
         if header[:4] != b'RIFF' or header[8:12] != b'WAVE' or header[12:16] != b'fmt ':
             raise ValueError("Invalid WAV file")
             
@@ -85,10 +94,7 @@ def extract_wav_header(wav_file_path):
         data_chunk_id = struct.unpack('4s', header[36:40])[0]
         data_chunk_size = struct.unpack('<I', header[40:44])[0]
         
-        # Read the data from the file
-        wav_file.seek(44)
-        data = wav_file.read(data_chunk_size)
-
+        # Encapsulating data 2bCool
         header_info = {
             'Header Chunk ID': header_chunk_id.decode(),
             'Header Chunk Size': header_chunk_size,
@@ -109,13 +115,15 @@ def extract_wav_header(wav_file_path):
     
 
 
-
+# ===== mAiN =====
 if __name__ == "__main__":
-    make_sine_wav_file()
-    make_fuzzy_wav()
+    # Main reqs.
+    sine = make_sine_wav_file()
+    clipped = make_fuzzy_wav()
 
+    # Analytics for my own sanity.
     print("\nWav file metadata:\n")
-    wav_file_path = './example.wav'  # Replace with your WAV file path
+    wav_file_path = './sine.wav'
     header_info = extract_wav_header(wav_file_path)
     for i in header_info:
         print(i, ': ', header_info[i])
