@@ -8,6 +8,7 @@ Fall 2024
 
 import numpy as np
 from scipy.io.wavfile import write
+import sounddevice as sd
 import matplotlib.pyplot as plot
 import struct
 
@@ -57,6 +58,11 @@ def make_fuzzy_wav():
     #for i in data[:50:]:
     #    print(i)
     return data
+
+# Part 3
+def play_sound_arr(np_arr: np.array):
+    sd.play(np_arr, samplerate=samplerate, blocking=True)
+    return
 
 
 
@@ -120,6 +126,9 @@ if __name__ == "__main__":
     # Main reqs.
     sine = make_sine_wav_file()
     clipped = make_fuzzy_wav()
+
+    play_sound_arr(sine)
+    play_sound_arr(clipped)
 
     # Analytics for my own sanity.
     print("\nWav file metadata:\n")
