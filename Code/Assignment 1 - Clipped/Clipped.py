@@ -3,6 +3,7 @@ Frank Claverie
 CS 416P
 Fall 2024
 '''
+
 # Documentation & inspiration found at:
 # https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.wavfile.write.html#scipy.io.wavfile.write
 
