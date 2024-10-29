@@ -25,5 +25,16 @@ I chose to complete this assignment using Python and its libraries: numpy, scipy
 The program Clipped.py in the Assignment 1 subdirectory can be run using VSCode or via command line.  
 The wav files will be output to the current working directory.
 
+### Adaptive tone control
+Our objective is to create a program that allows us to control tones across arbitrary frequency bands. 
+
+Requirements:
+* Band divisions: low(0-300hz), mid(300-2000hz), high(2000+hz).
+* Use FFT to analyze amplitude of particular frequencies.
+
+Things to consider: how wide of an FFT window should we use? how fast should the tone be adjusted? peak or avg band energy?
+
+* Useful libs: scipy.fft, nnumpy.fft, scipy.signal (filters)
+
 ### Future
 *Pending: student's tears
