@@ -12,6 +12,7 @@ from scipy.io.wavfile import write
 import sounddevice as sd
 import matplotlib.pyplot as plot
 import struct
+import os
 
 # Global data
 samplerate = 48000
@@ -29,9 +30,6 @@ def make_sine_wav_file():
     amplitude = .25 * max_amplitude
     data = amplitude * np.sin(2. * np.pi * freq * t)
 
-    # Export to wav file
-    write("./sine.wav", samplerate, data.astype(np.int16))
-    #plot_sine_wave(data)
     return data
 
 # Part 2
@@ -50,19 +48,11 @@ def make_fuzzy_wav():
         elif data[i] < low_clip:
             data[i] = low_clip
 
-    # Export
-    write("./clipped.wav", samplerate, data.astype(np.int16))
-
-    # Analytic - enable for some sweet extra info
-    #plot_sine_wave(data)
-    #print("Amps:", amplitude, high_clip, low_clip)
-    #for i in data[:50:]:
-    #    print(i)
     return data
 
 # Part 3
 def play_sound_arr(np_arr: np.array):
-    sd.play(np_arr, samplerate=samplerate, blocking=True)
+    sd.play(np_arr, samplerate, blocking=True)
     return
 
 
@@ -121,15 +111,21 @@ def extract_wav_header(wav_file_path):
         return header_info
     
 
+def save_wav(sound_arr: np.array, file_path:str):
+        write(file_path, samplerate, sound_arr.astype(np.int16))
 
 # ===== mAiN =====
 if __name__ == "__main__":
     # Main reqs.
+
     sine = make_sine_wav_file()
     clipped = make_fuzzy_wav()
 
     play_sound_arr(sine)
     play_sound_arr(clipped)
+
+    # save_wav(sine, "./sine.wav")
+    # save_wav(clipped, "./clipped.wav")
 
     # Analytics for my own sanity.
     print("\nWav file metadata:\n")

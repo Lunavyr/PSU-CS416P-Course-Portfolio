@@ -18,3 +18,11 @@ Additionally, the program must also play back the created audio data.
 
 I began by creating the two required audio datum. 
 I also created two helper functions to analyze the waveform and extract meta-data from the wav files for my own amusement.
+
+### 10/29/2024
+Began compiling personal notes in my own terms from the course (mostly for quick access for use in projects)
+
+### 10/30/2024
+Continued compiling notes to date and began structuring code directory to create some general utilites relating to analyzing and playing .wav files. Also added some stock of sample sounds generated with Ableton. Also making a file in a different directory able to be imported to another file in python is kinda tricky. BUT! I got it working, and VSCode even gives me that sweet juicy syntax highlighting for my own code =D
+
+Also also - started work on the adaptive tone control project. With the utils in place, I should have the basic boilerplate ready to go!
