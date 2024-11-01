@@ -6,6 +6,7 @@ Fall 2024
 
 import numpy as np
 from scipy.io.wavfile import write, read
+import scipy.fft as fft
 import sounddevice as sd
 import matplotlib.pyplot as plot
 import struct
@@ -23,12 +24,13 @@ wav_files = {
     4: "Fifth Sine.wav",
     5: "Maj7 Step (mono).wav",
     6: "Maj7 Step.wav",
-    7: "Sine Arp (mon).wav",
+    7: "Sine Arp (mono).wav",
     8: "Sine Arp.wav",
     9: "TOTTF - bass.wav",
     10: "TOTTF - dulci (mono).wav",
     11: "TOTTF - dulci.wav",
-    12: "TOTTF - wurli.wav"
+    12: "TOTTF - wurli.wav",
+    13: "C sine (mono).wav"
 }
 
 # Uses sounddevice to play a given sound array
@@ -92,4 +94,4 @@ def save_wav(sound_arr: np.array, file_path:str):
 def load_wav(file_name):
     wav_path = os.path.abspath(os.path.join(os.path.dirname(__file__), f"../Wavs/{file_name}"))
     samplerate, data = read(wav_path)
-    return data
+    return data, samplerate

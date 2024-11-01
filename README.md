@@ -36,5 +36,15 @@ Things to consider: how wide of an FFT window should we use? how fast should the
 
 * Useful libs: scipy.fft, nnumpy.fft, scipy.signal (filters)
 
+### Demos
+A loose collection of tests for various ideas that help calcify various class topics.
+
+Current content:
+* Demo.py - learned some quick cool, painful lessons about how to make importable modules for use in programs outside of a given directory.
+* FFT.py - a short program that analyzes the waveform vs frequency responses in a graphical format.
+
+### Utilites
+Collection of importable modules that serve basic functions (such as reading in a wav file) so that I don't have to keep writing the same lines of code.
+
 ### Future
 *Pending: student's tears

@@ -26,3 +26,6 @@ Began compiling personal notes in my own terms from the course (mostly for quick
 Continued compiling notes to date and began structuring code directory to create some general utilites relating to analyzing and playing .wav files. Also added some stock of sample sounds generated with Ableton. Also making a file in a different directory able to be imported to another file in python is kinda tricky. BUT! I got it working, and VSCode even gives me that sweet juicy syntax highlighting for my own code =D
 
 Also also - started work on the adaptive tone control project. With the utils in place, I should have the basic boilerplate ready to go!
+
+### 10/31/2024
+Made a program "FFT.py" to import an arbitrary wav file and analyze the resulting waveform array with an array corresponding to it's frequency responses. Plotted both against time in seconds and frequency in hz, respectively.
