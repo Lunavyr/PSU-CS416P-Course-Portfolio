@@ -8,17 +8,17 @@ Analog sound waves can be roughly approximated using an array of points that rou
 When considering frequency, the Nyquist limit suggests that to adequately capture a particular frequency, f, the rate at which samples are generated for the wave should be at least 2f.  
 For the human range of hearing, a sample rate of 44k is adequate - though good luck detecting really squeaky animals and such.
 
-### Analog waves to digital:
+## Analog waves to digital:
 A device called a ADC (analog to digital converter) samples analog electrical current relative to a sample rate (as previously stated) and a bit depth (16, 24, 32, 64 bits) to provide a range for representing amplitude. This ADC works by first filtering out frequencies above half the samplerate (Nyquist limit) also called anti-aliasing. The modified signal is sent to a sample and hold circuit, which effectively takes snapshots of the signals voltage, then sends that to an encoder which outputs binary representations of the voltage over time. 
 
-### Wav files:
+## Wav files:
 .wav (waveform audio file format) is a common file encoding for digital sound representation - it is comprised the following data and file meta-data:  
 * Header: Chunk ID: RIFF - verifies that file is not corrupt; Chunk size: file size minus header; Format: encoding format.
 * Format: Audio format: PCM, etc; Channels: 1,2, etc; Samplerate; Byterate: samplerate * channels * bits per sample / 8; Bits per sample.
 * Data: Data: actual sound representation.
 * Optional: Other meta-data segments, like artist, copyright, etc.
 
-### Fourier transforms:
+## Fourier transforms:
 Discrete Fourier Transform: $$ X[k] = \sum_{n=0}^{N-1} x[n] e^{-i k n / N} $$
 
 
@@ -29,12 +29,12 @@ EQ is also done in this paramaterized view - allowing us to dynamically control 
 
 * Idea: this can be used to effectively parse random samples and use additive synthesis to create arbitrarilly based synthesizers. Probably how sampling works these days...
 
-### Music theory:
+## Music theory:
 Notes are arbitrary divisions of ranges of frequencies into roughly equally sized partitions relative to a particular frequency.  
 For western music, A4(440hz) is considered the basis, and all notes between (440, 880) are divied up into 12 by: $$ \textrm{note}_i(f) = f \cdot 2^{i/12} $$
 
 
-### Filters (FIR and IIR):
+## Filters (FIR and IIR):
 FIR EQ: $$ y(n) = \sum_{k=0}^{N}a(k)*x(n-k) $$
 * y(n) - filtered signal
 * x(n-k) - input samples
@@ -55,4 +55,87 @@ One way to alleviate filter delay is by performing the same filtering from the b
 
 * Idea: filtering (anti-aliasing low pass [brick wall sytle]) can be a potent way to perform samplerate transforms. If we want s/2, then we can apply a filter at half the desired sampling rate (or 1/4 of start sample rate) then cut every other sample. Likewise for doubling, we first double the number of samples (either duplicate each original, or insert 0s), then apply a filter at 1/2 the original sample freq. (For very conservative scaling, we probably want to use FIRs to conserve phase data)
 
-### Effects:
+## Effects:
+Digital music effects are generally of two classes - those that perform transformations on a time-domain signal, and those on a frequency domain (and some, like convolution reverb in both).  
+For live performance, we want data throughput high and latency low - for production, this doesn't matter so much.  
+
+The following is a rough breakdown of common effects and their function:
+### Time-domain:
+***Delay Types***  
+Delay: 
+* Achieved by storing signal in a buffer and playing it back after some period of time.
+* Commonly implemented with circular buffers
+* Useful Params: Delay, Feedback, Mix
+
+Reverb:
+* Uses a similar priciple as delay, but adds in the functionality of comingling various versions of the buffered signal to simulate natural reverb.
+* Requires a deeper understanding of physical acoustics.
+* Useful Params: Room Size (likely affects how signals are combined), Decay, Mix
+
+Chorus/Flanger:
+* Similar to delay, but slightly pitch-modulates the repeated signal.
+* Flanger is basically a faster chorus.
+* Both commonly modulated with sythesis of an LFO
+* Useful Params: Delay, Mod Depth/Rate, Mix, Feedback
+
+***Amplitude Types***  
+Compressor:
+* Attenuates signal amplitude above a certain threshold.
+* Useful Params: Threshold, Ratio (reduction coefficient), Attack/Release(how quickly the compressor engages/disengages), Gain
+
+Tremolo:
+* Varies the amplitude of a signal with additive synthesis of a LFO.
+* Params: Depth (amplitude of LFO), Rate (freq of LFO)
+
+Limiter:
+* EXTREME COMPRESSOR
+
+Gate:
+* Filters out signals below a threshold amplitude (kind of an inverse compressor).
+* Ideal for Djent. Much chug. Small buzz.
+* Params: Threshold, Attack (how quickly the gate opens), Hold (how long to keep the gate open if noises dip below), Release, Range (how strongly the signal is attenuated)
+
+***Distortion Types***  
+Distortion/Overdrive:
+* In basic form, this amplifies and clips the signal above a certain threshold. Less extreme -> Distortion; More extreme -> Overdrive.
+* Params: Gain, Tone (filters), Mix
+
+Bitcrush:
+* Reduces bit depth/sampling rate to introduce weird transients.
+* Params: Bit Depth, Sample Rate
+
+***Modulation Types***
+Phaser:
+* Uses series of filters to shift the phase of signal, resulting in some frequencies being enhanced or squashed
+* Params: Stages, LFO rate/depth
+
+Vibrato:
+* Similar to tremolo, but modulates the frequency with an LFO instead.
+* Params: Depth, Rate
+
+### Frequency-Domain:  
+EQ:
+* Boosts/Attenuates specific freq ranges - can be done either with filters or via FFT bins
+* Params: Gain, Bandwidth
+
+Wah:
+* Dynamic bandpass filter sweeps across the FFT bins with an LFO.
+* Params: Sweep Freq, Resonance (bandwidth)
+
+Pitch Shifting:
+* Shifts frequency values higher or lower while maintaining harmonic relationships.
+
+Spectral Morphing:
+* Form of convolution between two signals spectra. 
+* Maps freq bins from source onto target using something like interpolation or direct convolution.
+
+### Hybrid:  
+Convolution Reverb:
+* Convolves a signal with an impulse response generated from a real environment.
+* More accurate, but also more expensive.
+
+Time Stretching:
+* Changes duration by manipulating phase and magnitude of FFT bins.
+
+Noise Reduction:
+* Squashes certain frequency ranges that are not strongly present (probably done via a threshold or something like a gradient) to help reduce noise.

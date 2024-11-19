@@ -6,7 +6,7 @@ Fall 2024
 This repository is the accumulation of all projects done in CS416p.  
 Content is organized in subfolders according to the assignments, and a detailed log can be found in the Notebook.md
 
-# Content:
+## Main Projects
 ### Assignment 1: Clipped Audio
 This assignment saw us creating raw audio data and both exporting it as a wav file and playing it within our program.  
 The raw audio was created and exported following the boilerplate found in the scipy.io.wavfile.write documentation.  
@@ -25,6 +25,7 @@ I chose to complete this assignment using Python and its libraries: numpy, scipy
 The program Clipped.py in the Assignment 1 subdirectory can be run using VSCode or via command line.  
 The wav files will be output to the current working directory.
 
+
 ### Adaptive tone control
 Our objective is to create a program that allows us to control tones across arbitrary frequency bands. 
 
@@ -32,10 +33,21 @@ Requirements:
 * Band divisions: low(0-300hz), mid(300-2000hz), high(2000+hz).
 * Use FFT to analyze amplitude of particular frequencies.
 
-Things to consider: how wide of an FFT window should we use? how fast should the tone be adjusted? peak or avg band energy?
+This program was a bit of a beast to complete... lots of digging through scipy docs.
+However, it works decently as an "across the board" equalizer. In its current state it reasonably averages out the total energies of each of the bands above.
 
-* Useful libs: scipy.fft, nnumpy.fft, scipy.signal (filters)
+The implementation for this project is as follows:
+* Load one of the wav files saved in the ./Code/Wavs at random.
+* For each channel: convert the PCM into a frequency spectrum, convert that into an array of frequency bins, apply the core algorithm (control_tone), convert back to PCM.
 
+The control_tone function is as follows:
+* For each band, find the total energy for that range of frequencies.
+* Take the average energy of all bands and use that to establish a gain setting for each frequency band.
+* Apply the gain to the data at each band.
+
+Getting the program to work in the first place was challenging, but once all the pieces were properly in place, it simply became a matter of adjusting the function determining the gain. Presently I am calculating it by dividing the average energy by the absolute difference of band and average energies. This seems to work ok, but I'd really like for the gain to increase decently over the span of frequency bands. I might come back and find an equation to achieve this, but the core lessons seem to have been learned!
+
+## Auxillary Work
 ### Demos
 A loose collection of tests for various ideas that help calcify various class topics.
 

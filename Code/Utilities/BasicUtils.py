@@ -87,8 +87,10 @@ def extract_wav_header(wav_file_path):
         return header_info
 
 # Allows for saving a sound wave as a .wav file
-def save_wav(sound_arr: np.array, file_path:str):
-        write(file_path, sample_rate, sound_arr.astype(np.int16))
+def save_wav(sound_arr: np.array, file_path:str, samplerate = sample_rate):
+        # Needed to convert standard np_arr (range: -1.0 -> 1.0) into 16-bit PCM 
+        (sound_arr * np.iinfo(np.int16).max).astype(np.int16)
+        write(file_path, samplerate, sound_arr)
 
 # Loads the data from a given .wav file
 def load_wav(file_name):

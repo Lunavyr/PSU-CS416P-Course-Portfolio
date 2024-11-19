@@ -29,3 +29,9 @@ Also also - started work on the adaptive tone control project. With the utils in
 
 ### 10/31/2024
 Made a program "FFT.py" to import an arbitrary wav file and analyze the resulting waveform array with an array corresponding to it's frequency responses. Plotted both against time in seconds and frequency in hz, respectively.
+
+### 11/7/2024
+Added notes to Notes.md
+
+### 11/18/2024
+Added more notes. Finished Adaptive Tone Control and added an entry in readme.md describing it. Fixed issue with save_wav in BasicUtils.py not being converted back into 16-bit PCM.
