@@ -45,7 +45,7 @@ The control_tone function is as follows:
 * Take the average energy of all bands and use that to establish a gain setting for each frequency band.
 * Apply the gain to the data at each band.
 
-Getting the program to work in the first place was challenging, but once all the pieces were properly in place, it simply became a matter of adjusting the function determining the gain. Presently I am calculating it by dividing the average energy by the absolute difference of band and average energies. This seems to work ok, but I'd really like for the gain to increase decently over the span of frequency bands. I might come back and find an equation to achieve this, but the core lessons seem to have been learned!
+Getting the program to work in the first place was challenging, but once all the pieces were properly in place, it simply became a matter of adjusting the function determining the gain. Presently I am calculating it by dividing the average energy by the absolute difference of band and average energies, then multiplying it by the index of the current band (1, 2, ..., etc) - THEN finally taking the square root. This seems to work pretty well, only introduces minor clipping, and I feel satisfied with my work!
 
 ## Auxillary Work
 ### Demos

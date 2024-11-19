@@ -34,7 +34,7 @@ def control_tone(fft_data:np.array, bands:np.array, freqs:np.array) -> np.array:
     for i, band in enumerate(bands):
         # This guy is a finicky one - I've tried lots of different stuff
         #   but this seems to work subtly for now.
-        gain = (avg_energy / np.abs(avg_energy - energy[i]))
+        gain = np.sqrt((avg_energy / np.abs(avg_energy - energy[i]) * np.int16(i + 1)))
         print(band, "gain", gain)
         attenuation_arr.append(gain)
 
@@ -58,8 +58,8 @@ def main():
         "Mid": (300, 2000),
         "High": (2000, samplerate/2)
     }
-    print(f"Before processing: Min {np.min(data)}, Max {np.max(data)}")
-    print("Dimension:", len(data.shape))
+    print(f"\nAdapting tone for file: {wav_file}\n")
+    print(f"Before processing: min {np.min(data):0.5f}, max {np.max(data):0.5f}")
 
     # Mono Channel equalization
     if len(data.shape) == 1:
@@ -93,7 +93,7 @@ def main():
             data[:, channel] = temp_data
 
 
-    print(f"\nAfter processing: Min {np.min(data)}, Max {np.max(data)}")
+    print(f"\nBefore processing: min {np.min(data):0.5f}, max {np.max(data):0.5f}")    
     save_wav(data, "After.wav", samplerate)
 
 if __name__ == "__main__":
