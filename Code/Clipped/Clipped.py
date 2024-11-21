@@ -15,9 +15,9 @@ import struct
 import os
 
 # Global data
-samplerate = 48000
+samplerate = 96000
 freq = 440
-max_amplitude = np.iinfo(np.int16).max
+max_amplitude = 0.2 * np.iinfo(np.int16).max
 
 
 
@@ -121,6 +121,9 @@ if __name__ == "__main__":
     sine = make_sine_wav_file()
     clipped = make_fuzzy_wav()
 
+    # plot_sine_wave(sine)
+    # plot_sine_wave(clipped)
+
     play_sound_arr(sine)
     play_sound_arr(clipped)
 
@@ -128,8 +131,8 @@ if __name__ == "__main__":
     # save_wav(clipped, "./clipped.wav")
 
     # Analytics for my own sanity.
-    print("\nWav file metadata:\n")
-    wav_file_path = './sine.wav'
-    header_info = extract_wav_header(wav_file_path)
-    for i in header_info:
-        print(i, ': ', header_info[i])
+    # print("\nWav file metadata:\n")
+    # wav_file_path = './sine.wav'
+    # header_info = extract_wav_header(wav_file_path)
+    # for i in header_info:
+    #     print(i, ': ', header_info[i])
