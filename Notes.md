@@ -139,3 +139,10 @@ Time Stretching:
 
 Noise Reduction:
 * Squashes certain frequency ranges that are not strongly present (probably done via a threshold or something like a gradient) to help reduce noise.
+
+
+## MIDI
+### Musical Instrument Digital Interface.  
+This data encoding is (for MIDI 1.0) comprised of messages that take the shape [[status], [data1], [data2]], where each group is a byte.  
+The status indicates what sort of message it is: note_on, note_off, control_change, Polyphonic Aftertouch, ..., etc.  
+The data bytes have information pertaining to each of these message types, and allow us to pass in super lightweight information for use in a synthesizer, which can scale this information to a musical domain.

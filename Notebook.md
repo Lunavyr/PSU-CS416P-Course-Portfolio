@@ -35,3 +35,8 @@ Added notes to Notes.md
 
 ### 11/18/2024
 Added more notes. Finished Adaptive Tone Control and added an entry in readme.md describing it. Fixed issue with save_wav in BasicUtils.py not being converted back into 16-bit PCM.
+
+### 11/20/2024
+Started and went WAAAY overboard on a MIDI demo. The goal here was to establish a link between my MIDI controller, which was quickly successful after some documentation hunting.  
+I ended up basically building a boilerplate sinewave synth that also sometimes still crashes. At least I have my next objective laid out...  
+Also added notes to MIDI section and updated README.

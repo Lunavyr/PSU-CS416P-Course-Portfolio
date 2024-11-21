@@ -54,6 +54,8 @@ A loose collection of tests for various ideas that help calcify various class to
 Current content:
 * Demo.py - learned some quick cool, painful lessons about how to make importable modules for use in programs outside of a given directory.
 * FFT.py - a short program that analyzes the waveform vs frequency responses in a graphical format.
+* MidiDemo.py - primarilly an attempt to wrangle midi data that turned into a barebones synthesizer.  
+Provides a solid foundation for building a fully fledged synth, which is the next project!
 
 ### Utilites
 Collection of importable modules that serve basic functions (such as reading in a wav file) so that I don't have to keep writing the same lines of code.
