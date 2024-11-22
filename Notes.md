@@ -1,8 +1,9 @@
 # Personal Notes
 Quick reference to general topics
 
-Project ideas: dynamic grain distortion with octaver
+Project ideas: wavetable synthesizer with adjustable gain, attack, decay, delay. Maybe some wavetable modulation, too (this is the ideal)
 
+# Digital/Background Concepts:
 ## Sound representation in computers:
 Analog sound waves can be roughly approximated using an array of points that roughly draw the wave we want to encode, called PCM (pulse code modulation).  
 When considering frequency, the Nyquist limit suggests that to adequately capture a particular frequency, f, the rate at which samples are generated for the wave should be at least 2f.  
@@ -18,9 +19,15 @@ A device called a ADC (analog to digital converter) samples analog electrical cu
 * Data: Data: actual sound representation.
 * Optional: Other meta-data segments, like artist, copyright, etc.
 
+
+## MIDI
+### Musical Instrument Digital Interface.  
+This data encoding is (for MIDI 1.0) comprised of messages that take the shape [[status], [data1], [data2]], where each group is a byte.  
+The status indicates what sort of message it is: note_on, note_off, control_change, Polyphonic Aftertouch, ..., etc.  
+The data bytes have information pertaining to each of these message types, and allow us to pass in super lightweight information for use in a synthesizer, which can scale this information to a musical domain.
+
 ## Fourier transforms:
 Discrete Fourier Transform: $$ X[k] = \sum_{n=0}^{N-1} x[n] e^{-i k n / N} $$
-
 
 Allows us to represent a sequence of amplitude values over time as a function returning amplitudes at particular frequencies and their relative phase.  
 This analysis lends itself well to manipulating sounds - such as determining the dominate frequencies present in a particular sound.  
@@ -33,7 +40,7 @@ EQ is also done in this paramaterized view - allowing us to dynamically control 
 Notes are arbitrary divisions of ranges of frequencies into roughly equally sized partitions relative to a particular frequency.  
 For western music, A4(440hz) is considered the basis, and all notes between (440, 880) are divied up into 12 by: $$ \textrm{note}_i(f) = f \cdot 2^{i/12} $$
 
-
+# Applied Concepts
 ## Filters (FIR and IIR):
 FIR EQ: $$ y(n) = \sum_{k=0}^{N}a(k)*x(n-k) $$
 * y(n) - filtered signal
@@ -140,9 +147,67 @@ Time Stretching:
 Noise Reduction:
 * Squashes certain frequency ranges that are not strongly present (probably done via a threshold or something like a gradient) to help reduce noise.
 
+Pooling:
+* This is a fascinating technique. Essentially the idea is to use a window of arbitrary size to propogate across a signal and average (or min or max) data points along the length of the signal with steps in the size of the window.  
+* Kinda feels like convolution meets filtering. This could be an effective way to downsample audio or compress its size while maintaining key characteristics of sound.  
+* Additionally, this might be of use in sampling an arbitrary sound using FFT analysis, as it would allow peak values (thus the fundamental note and overtone response) to more easily discovered.  
+* Idea: use pooling to help create a function that provides the mathematical relationship of frequencies up to some arbitrary number of frequencies and given a particular cutoff amplitude.  
+e.g.
+```python
+def get_sample_equation_coefficients(fft_data, window_len, amp_cutoff)
+    pool_size = window_len
+    fft_data = avg_pool(fft_data, pool_size)
+    # fft_data = avg_pool_backwards(fft_data, pool_size) <- Maybe useful. Maybe not.
 
-## MIDI
-### Musical Instrument Digital Interface.  
-This data encoding is (for MIDI 1.0) comprised of messages that take the shape [[status], [data1], [data2]], where each group is a byte.  
-The status indicates what sort of message it is: note_on, note_off, control_change, Polyphonic Aftertouch, ..., etc.  
-The data bytes have information pertaining to each of these message types, and allow us to pass in super lightweight information for use in a synthesizer, which can scale this information to a musical domain.
+    peaks = get_peaks(fft_data, amp_cutoff) # Get list of peak values
+    coefs = get_musical_rel(peaks)
+    return coefs
+```
+* Could then use this idea to generate sounds of this pattern but at any given frequency and use it as a carrier wave, in a wavetable, or in additive/subtractive synthesis
+
+
+# Python Notes:
+
+## Useful Libraries:
+### Numpy:
+* Affords the usage of vectorized arrays and access to a great deal of predefined, easy access math functions.
+* Used to hard encode digital representation of sound waves.
+
+### Scipy:
+* Gives us the signal library, useful for creating filters.
+* Also gives us the fft and ifft, which is useful for frequency analysis and manipulation
+* Honestly the GOAT for pythonic DSP
+* Likewise has libraries for wavfile manipulation and many other goodies
+
+### Sounddevice:
+* Allows us to interface with our machines native sound system.
+* wE cAN hEaR nUmbErs.
+* Output stream expects dtype in the set {float32(High quality), int16, int8}
+* Requires defined callback function that fills "frames" (read: sound buffer) with sound data.
+
+### Mido:
+* Python wrapper for python-rtmidi (which is a wrapper for C's rtmidi) {Can also use other midi libraries as backend, like pygame.midi}
+* Allows for the structured use and manipulation of midi in so called MIDI Objects.
+* Super handy. 
+* Fascinatingly (examples for which are annoyingly missing the documentation), mido.open_input accepts a callback function as a parameter, which can asynchronously process midi events.
+* Not sure if inport.receive() is a better option here, though. Needs more research.
+
+* Ideas on race condition prevention: 
+* inport polling + snapshotting sound buffer
+* callback functions for both and using a thread on input and send messages directly to a shared queue
+
+### Pyo:
+* Prebuilt DSP components. Might be worth a look, or could be similar to scipy.signals
+
+### Numba (PyPy, Cython, JAX):
+* Just in time compiler for compiling often reused code into machine code (versus the normal byte code). Can drastically improve performance of filters (and probably everything else in synths)
+* Can utilize gpu processing. Which is saucy.
+* Requires more research and is probably agressively beyond the scope of this class.
+* Apparently pairs extremely well with numpy and CUDA
+* Evidently this is also similar to tensorflow
+
+* Nevermind I hate this idea. Apparently it isn't supported on Python 3.13. Rude...
+* JAX might be a suitable replacement though...
+
+### Jupyter:
+* Strange webpage based environment for running python snippets. Could be useful for iterative programming.
