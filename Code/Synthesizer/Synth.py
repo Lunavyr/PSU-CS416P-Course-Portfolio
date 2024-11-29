@@ -19,10 +19,10 @@ Plan:
 * Global sound buffer
 * Generate base wavetable for sound generation.
 * Wavetable crossfade function
-*   Maybe wavetable as a class (could generate a dict of predefined wave phases for each wave type)
-*   Maybe crossfade with osc num of params and use them to control filters applied to all waves
+*   Wavetable as a class (could pre-generate a dict of predefined wave phases for each wave type)
+*   Crossfade with osc num of params and use them to control filters applied to all waves
         then add together
-*   Maybe choose between two 
+*   * TBD - function for crossfading between individual wavetypes (crossfade speed as MIDI param) 
 
 * Abstract a Note as a class
     Holds info about note_on, note_off, freq, phase, gain, attack, release
@@ -53,10 +53,13 @@ def additive_wave():
 def tbd():
     pass
 # Samples parts from the above to make some funky biz
-def wavetable():
+def waveform():
     pass
 def sample_time():
     pass
+
+# Populate with refs to funcs or pregenerate all?
+wavetable = {}
 
 # This might allow me to parallelize for stereo use
 class Oscillator:
