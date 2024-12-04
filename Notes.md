@@ -3,22 +3,33 @@ Quick reference to general topics
 
 Project ideas: wavetable synthesizer with adjustable gain, attack, decay, delay. Maybe some wavetable modulation, too (this is the ideal)
 
-# Digital/Background Concepts:
-## Sound representation in computers:
+## Digital/Background Concepts:
+### Sound representation in computers:
 Analog sound waves can be roughly approximated using an array of points that roughly draw the wave we want to encode, called PCM (pulse code modulation).  
 When considering frequency, the Nyquist limit suggests that to adequately capture a particular frequency, f, the rate at which samples are generated for the wave should be at least 2f.  
 For the human range of hearing, a sample rate of 44k is adequate - though good luck detecting really squeaky animals and such.
 
-## Analog waves to digital:
+### Analog waves to digital:
 A device called a ADC (analog to digital converter) samples analog electrical current relative to a sample rate (as previously stated) and a bit depth (16, 24, 32, 64 bits) to provide a range for representing amplitude. This ADC works by first filtering out frequencies above half the samplerate (Nyquist limit) also called anti-aliasing. The modified signal is sent to a sample and hold circuit, which effectively takes snapshots of the signals voltage, then sends that to an encoder which outputs binary representations of the voltage over time. 
 
-## Wav files:
+### Wav files:
 .wav (waveform audio file format) is a common file encoding for digital sound representation - it is comprised the following data and file meta-data:  
 * Header: Chunk ID: RIFF - verifies that file is not corrupt; Chunk size: file size minus header; Format: encoding format.
 * Format: Audio format: PCM, etc; Channels: 1,2, etc; Samplerate; Byterate: samplerate * channels * bits per sample / 8; Bits per sample.
 * Data: Data: actual sound representation.
 * Optional: Other meta-data segments, like artist, copyright, etc.
 
+### Frequency/Period/Samples/Sound Frames
+Given a sample rate, s; a frequency, f where:
+$$ s = (samples/second) $$ 
+and 
+$$ f = (1 second/period) = (cycles/1 second) $$
+* Number of samples per cycle: 
+$$ s/f = (samples/second)/(cycles/second) = (samples/second)*(second/cycles) = (samples/cycles) $$
+* Cycles per sound frame (Use ceiling function to make sure it's big enough): 
+$$ (cycles/samples) * (samples/frame) = (cycles/frame) $$
+* Adjusted frame size (to make sure the passed back wave is big enough - use round or ceiling):
+$$ (cycles/frame) * (samples/cylces) = (samples/frame) $$
 
 ## MIDI
 ### Musical Instrument Digital Interface.  
@@ -26,7 +37,10 @@ This data encoding is (for MIDI 1.0) comprised of messages that take the shape [
 The status indicates what sort of message it is: note_on, note_off, control_change, Polyphonic Aftertouch, ..., etc.  
 The data bytes have information pertaining to each of these message types, and allow us to pass in super lightweight information for use in a synthesizer, which can scale this information to a musical domain.
 
-## Fourier transforms:
+
+
+## Sound Manipulation
+### Fourier transforms:
 Discrete Fourier Transform: $$ X[k] = \sum_{n=0}^{N-1} x[n] e^{-i k n / N} $$
 
 Allows us to represent a sequence of amplitude values over time as a function returning amplitudes at particular frequencies and their relative phase.  
@@ -61,6 +75,13 @@ Infinite IRs work similarly to FIRs - except that they add in some amount of att
 One way to alleviate filter delay is by performing the same filtering from the back of the newly generated attenuated wave. Of course, this will also modify the resulting shape of the wave.
 
 * Idea: filtering (anti-aliasing low pass [brick wall sytle]) can be a potent way to perform samplerate transforms. If we want s/2, then we can apply a filter at half the desired sampling rate (or 1/4 of start sample rate) then cut every other sample. Likewise for doubling, we first double the number of samples (either duplicate each original, or insert 0s), then apply a filter at 1/2 the original sample freq. (For very conservative scaling, we probably want to use FIRs to conserve phase data)
+
+### Resampling:
+Technique used to adapt a given sound array into an array with a different sample rate
+* Useful for ensuring consistency across sounds in a program
+* Especially useful for pitch and time shifting as an effect.  
+However, this requires care: interpolation required when up/down sampling; and filtering can help reduce artifacting.
+
 
 ## Effects:
 Digital music effects are generally of two classes - those that perform transformations on a time-domain signal, and those on a frequency domain (and some, like convolution reverb in both).  
@@ -195,6 +216,7 @@ def get_sample_equation_coefficients(fft_data, window_len, amp_cutoff)
 * Ideas on race condition prevention: 
 * inport polling + snapshotting sound buffer
 * callback functions for both and using a thread on input and send messages directly to a shared queue
+* Real solution -> use queue.put() for capturing and queue.get() for thread-safe processing
 
 ### Pyo:
 * Prebuilt DSP components. Might be worth a look, or could be similar to scipy.signals

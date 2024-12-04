@@ -47,6 +47,20 @@ The control_tone function is as follows:
 
 Getting the program to work in the first place was challenging, but once all the pieces were properly in place, it simply became a matter of adjusting the function determining the gain. Presently I am calculating it by dividing the average energy by the absolute difference of band and average energies, then multiplying it by the index of the current band (1, 2, ..., etc) - THEN finally taking the square root. This seems to work pretty well, only introduces minor clipping, and I feel satisfied with my work!
 
+
+### Wavetable Synthesizer
+This project's objective is to create a wavetable synthesizer that is controllable with a USB MIDI controller.  
+Presently, this program is configured to run with a Novation Launchkey mk4.  
+
+Current Implementations:
+* MIDI event listener using the "mido" package: this listens for midi events sent from controller and passes it to a queue for later processing in the audio callback function.
+* Audio callback routine: this feature pulls midi events from the midi_queue and currently outputs a diagnostic message for which events handling has not been implemented.
+
+To be Implemented:
+* Implement sound generation in Oscillator and Note classes
+* Connect handled midi events to sound generation
+* Implement sound generation functionality in audio callback
+
 ## Auxillary Work
 ### Demos
 A loose collection of tests for various ideas that help calcify various class topics.
