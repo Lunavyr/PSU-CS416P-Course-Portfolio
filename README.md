@@ -6,8 +6,8 @@ Fall 2024
 This repository is the accumulation of all projects done in CS416p.  
 Content is organized in subfolders according to the assignments, and a detailed log can be found in the Notebook.md
 
-## Main Projects
-### Assignment 1: Clipped Audio
+# Main Projects
+## Assignment 1: Clipped Audio
 This assignment saw us creating raw audio data and both exporting it as a wav file and playing it within our program.  
 The raw audio was created and exported following the boilerplate found in the scipy.io.wavfile.write documentation.  
 Additionally, the clipped audio was achieved by iteratively comparing each index in the created array to the threshold.
@@ -26,7 +26,7 @@ The program Clipped.py in the Assignment 1 subdirectory can be run using VSCode 
 The wav files will be output to the current working directory.
 
 
-### Adaptive tone control
+## Adaptive tone control
 Our objective is to create a program that allows us to control tones across arbitrary frequency bands. 
 
 Requirements:
@@ -48,20 +48,28 @@ The control_tone function is as follows:
 Getting the program to work in the first place was challenging, but once all the pieces were properly in place, it simply became a matter of adjusting the function determining the gain. Presently I am calculating it by dividing the average energy by the absolute difference of band and average energies, then multiplying it by the index of the current band (1, 2, ..., etc) - THEN finally taking the square root. This seems to work pretty well, only introduces minor clipping, and I feel satisfied with my work!
 
 
-### Wavetable Synthesizer
+## Wavetable Synthesizer
 This project's objective is to create a wavetable synthesizer that is controllable with a USB MIDI controller.  
 Presently, this program is configured to run with a Novation Launchkey mk4.  
 
-Current Implementations:
+
+Features:
+* Wavetable Generation - program generates single phase arrays for each note in the midi sequence and saves them to a dictionary indexable with a midi note number.  
+* Oscillator Class - using the generated wavetables, this class generates frame_count sized arrays of sounds that oscillates between the two generated wave types.
+* Note Class - this is the functional interface between MIDI, sound, and output. This class handles note on and off events and applies an adjustable ADSR envelope to the sound generated in the Oscillator class.
+* MIDI parsing function - for use in the output callback function; processes available notes and schedules notes to be played or finished.  
+This method will also allow for dynamic control over the various global paramaters and feature integration with a sustain pedal... eventually...
 * MIDI event listener using the "mido" package: this listens for midi events sent from controller and passes it to a queue for later processing in the audio callback function.
-* Audio callback routine: this feature pulls midi events from the midi_queue and currently outputs a diagnostic message for which events handling has not been implemented.
+* Audio callback routine: this feature pulls midi events from the midi_queue and leverages all of the above to create sweet, sweet music.  
 
-To be Implemented:
-* Implement sound generation in Oscillator and Note classes
-* Connect handled midi events to sound generation
-* Implement sound generation functionality in audio callback
+This project was a BEAST. I learned a lot and struggled A LOT. Im decently satisfied with it's functionality thus far. The sound generation is reasonably balanced, and the ADSR envelope functions well.  
+Though, I get the feeling I'm gonna be working on this more in my free time. And I'd really like to introduce stereo output, filters on the saw waves (probably dynamic), compression, and delay eventually.
 
-## Auxillary Work
+Also - a fun little consequence of the way I've structured this code: if the setting "global_fade" is set to True, the oscillator will manipulate a single variable set for an arbitrary number of notes, which means that the speed at which the sound oscillates between wave types increases for each consecutive note. It's kinda fun, and makes me significantly less annoyed that this fade effect isn't synchronized across notes.
+
+
+
+# Auxillary Work
 ### Demos
 A loose collection of tests for various ideas that help calcify various class topics.
 
